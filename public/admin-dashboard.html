@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Content Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; background: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        input, textarea, button { display: block; width: 100%; margin-bottom: 15px; padding: 10px; font-size: 16px; box-sizing: border-box; }
+        textarea { resize: vertical; height: 100px; }
+        button.submit-btn { background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button.submit-btn:hover { background: #218838; }
+        .success { color: green; font-weight: bold; margin-bottom: 15px; }
+        .manage-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .delete-btn { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; width: auto; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Add New Content & Files</h2>
+        <div id="msg"></div>
+        <form action="/api/upload-content" method="POST" enctype="multipart/form-data">
+            <label>Title / Heading:</label>
+            <input type="text" name="title" placeholder="Title" required>
+            <label>Description / Details:</label>
+            <textarea name="description" placeholder="Description..."></textarea>
+            <label>Upload File (Image, Audio MP3, Document):</label>
+            <input type="file" name="mediaFile">
+            <button type="submit" class="submit-btn">Publish to Website</button>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Manage / Delete Content</h2>
+        <div id="manage-container">Loading...</div>
+    </div>
+    <script>
+        if (window.location.search.includes('success=true')) {
+            document.getElementById('msg').innerHTML = '<p class="success">Successfully published!</p>';
+        }
+        function loadManageList() {
+            fetch('/api/get-content').then(res => res.json()).then(data => {
+                const container = document.getElementById('manage-container');
+                if (data.length === 0) { container.innerHTML = '<p>No items yet.</p>'; return; }
+                container.innerHTML = '';
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="manage-item">
+                            <span><strong>${item.title || 'Untitled'}</strong></span>
+                            <button class="delete-btn" onclick="deleteItem(${item.id})">Delete</button>
+                        </div>`;
+                });
+            });
+        }
+        function deleteItem(id) {
+            if (confirm('Delete this item?')) {
+                fetch(`/api/delete/${id}`, { method: 'POST' }).then(() => loadManageList());
+            }
+        }
+        loadManageList();
+    </script>
+</body>
+</html>
