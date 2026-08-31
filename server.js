@@ -6,14 +6,19 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Explicit route for your admin dashboard filename
+// Route for the admin dashboard
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
 
-// Fallback route for home or main portal
+// Fallback route that won't crash if index.html is missing
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.send('Server is running! Go to <a href="/admin">/admin</a> to open your dashboard.');
+        }
+    });
 });
 
 app.listen(PORT, () => {
