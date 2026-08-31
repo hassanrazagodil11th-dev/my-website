@@ -11,12 +11,13 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
 
-// Fallback route that won't crash if index.html is missing
+// Route for the main portal / home page
 app.get('/', (req, res) => {
     const indexPath = path.join(__dirname, 'public', 'index.html');
     res.sendFile(indexPath, (err) => {
         if (err) {
-            res.send('Server is running! Go to <a href="/admin">/admin</a> to open your dashboard.');
+            // If index.html is missing, it won't crash; it will direct you to the admin panel
+            res.send('Welcome! Your main portal page is being updated. Go to <a href="/admin">Open Admin Dashboard</a>');
         }
     });
 });
