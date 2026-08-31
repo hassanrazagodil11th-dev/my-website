@@ -6,9 +6,9 @@ const PORT = process.env.PORT || 3000;
 // Serve static files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Explicit route for the admin dashboard
-app.get('/admin.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+// Explicit route for your admin dashboard filename
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
 
 // Fallback route for home or main portal
