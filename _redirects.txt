@@ -1,0 +1,1 @@
+/admin    /admin-dashboard.html    200
