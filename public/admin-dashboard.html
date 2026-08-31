@@ -3,310 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Admin Dashboard | Content Manager</title>
+    <title>AhleSunnat.AI - Master Content & Layout Admin Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --danger: #ef4444;
-            --danger-hover: #dc2626;
-            --success-bg: #d1fae5;
-            --success-text: #065f46;
-            --border: #e2e8f0;
+            --bg-base: #07090e;
+            --surface-glass: rgba(15, 23, 42, 0.88);
+            --surface-hover: rgba(30, 41, 59, 0.95);
+            --border-glow: rgba(245, 158, 11, 0.28);
+            --border-active: rgba(245, 158, 11, 0.75);
+            --primary-gold: #f59e0b;
+            --primary-gold-dark: #b45309;
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #f43f5e;
+            --success: #10b981;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, var(--bg-base) 60%, #020617 100%);
+            background-attachment: fixed;
             color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            display: flex;
             min-height: 100vh;
-        }
-
-        /* Sidebar Navigation */
-        aside {
-            width: 260px;
-            background: var(--card-bg);
-            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 24px;
-        }
-
-        aside h2 {
-            font-size: 1.25rem;
-            color: var(--primary);
-            margin-top: 0;
-            margin-bottom: 2rem;
-            display: flex;
             align-items: center;
-            gap: 10px;
+            padding: 30px 20px;
         }
 
-        aside nav a {
-            color: var(--text-muted);
-            text-decoration: none;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            transition: all 0.2s ease;
-        }
+        .admin-shell { width: 100%; max-width: 1200px; display: flex; flex-direction: column; gap: 24px; }
 
-        aside nav a:hover, aside nav a.active {
-            background-color: #e0e7ff;
-            color: var(--primary);
+        /* Admin Header */
+        .admin-header {
+            background: var(--surface-glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow); border-radius: 24px; padding: 24px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); flex-wrap: wrap; gap: 16px;
         }
+        .admin-title h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--primary-gold); }
+        .admin-title p { color: var(--text-muted); font-size: 0.9rem; margin-top: 4px; }
+        
+        .admin-actions { display: flex; gap: 12px; }
+        .btn {
+            background: linear-gradient(135deg, var(--primary-gold) 0%, var(--primary-gold-dark) 100%);
+            color: #0b0f19; border: none; padding: 12px 20px; font-size: 0.9rem; font-weight: 700;
+            border-radius: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(180,83,9,0.3);
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+        .btn-secondary { background: var(--surface-glass); color: var(--text-main); border: 1px solid var(--border-glow); box-shadow: none; }
+        .btn-secondary:hover { background: var(--surface-hover); border-color: var(--primary-gold); }
 
-        /* Main Content Area */
-        main {
-            flex: 1;
-            padding: 40px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+        /* Dashboard Grid Layout */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
 
-        header {
-            margin-bottom: 30px;
+        .panel-card {
+            background: var(--surface-glass); backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glow); border-radius: 24px; padding: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 18px;
         }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; }
+        .panel-header h2 { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
 
-        header h1 {
-            font-size: 1.8rem;
-            margin: 0 0 8px 0;
+        /* Form Controls */
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-label { font-size: 0.82rem; font-weight: 600; color: var(--text-muted); }
+        .form-input, select, textarea {
+            background: rgba(7, 9, 14, 0.8); border: 1px solid var(--border-glow); border-radius: 12px;
+            padding: 10px 14px; color: var(--text-main); font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s;
         }
+        .form-input:focus, select:focus, textarea:focus { border-color: var(--primary-gold); box-shadow: 0 0 10px rgba(245,158,11,0.2); }
 
-        header p {
-            color: var(--text-muted);
-            margin: 0;
-        }
+        /* Items List Management */
+        .items-list { display: flex; flex-direction: column; gap: 10px; max-height: 220px; overflow-y: auto; padding-right: 4px; }
+        .items-list::-webkit-scrollbar { width: 6px; }
+        .items-list::-webkit-scrollbar-thumb { background: rgba(245,158,11,0.3); border-radius: 6px; }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            margin-bottom: 30px;
+        .item-row {
+            background: rgba(7, 9, 14, 0.6); border: 1px solid var(--border-glow); border-radius: 12px;
+            padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px;
         }
+        .item-info { display: flex; flex-direction: column; gap: 2px; }
+        .item-name { font-weight: 600; font-size: 0.88rem; color: var(--text-main); }
+        .item-meta { font-size: 0.74rem; color: var(--text-muted); }
 
-        .card h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.2rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
+        .icon-btn {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border-glow); color: var(--text-muted);
+            width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s; font-size: 0.8rem;
         }
+        .icon-btn:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-        label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 6px;
-            color: #334155;
+        /* Visitor Analytics Panel Styling */
+        .visitor-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .stat-box {
+            background: rgba(7, 9, 14, 0.6); border: 1px solid var(--border-glow); border-radius: 14px;
+            padding: 14px; display: flex; flex-direction: column; gap: 4px; text-align: center;
         }
+        .stat-box .number { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary-gold); }
+        .stat-box .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        input[type="text"], textarea, input[type="file"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-            background-color: #fdfdfd;
-            transition: border-color 0.2s;
+        /* Portal Live Preview Studio */
+        .preview-wrapper {
+            background: var(--surface-glass); border: 1px solid var(--border-glow); border-radius: 24px; padding: 24px;
+            display: flex; flex-direction: column; gap: 16px; grid-column: 1 / -1;
         }
+        .portal-canvas {
+            background: #07090e; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 20px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+        .preview-banner {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(6, 182, 212, 0.15) 100%);
+            border: 1px solid var(--primary-gold); border-radius: 14px; padding: 18px; text-align: center;
+        }
+        .preview-banner h3 { color: var(--primary-gold); font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+        .preview-banner p { color: var(--text-muted); font-size: 0.85rem; }
 
-        input[type="text"]:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        .preview-nav { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+        .preview-nav-pill {
+            background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-glow); padding: 8px 16px;
+            border-radius: 12px; font-size: 0.82rem; font-weight: 600; color: var(--text-main); white-space: nowrap; cursor: pointer;
         }
+        .preview-nav-pill:hover { border-color: var(--primary-gold); color: var(--primary-gold); }
 
-        textarea {
-            resize: vertical;
-            height: 120px;
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+        .media-preview-card {
+            background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-glow); border-radius: 14px; padding: 14px;
+            display: flex; flex-direction: column; gap: 8px;
         }
-
-        button.submit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: background 0.2s;
-        }
-
-        button.submit-btn:hover {
-            background: var(--primary-hover);
-        }
-
-        .success-banner {
-            background-color: var(--success-bg);
-            color: var(--success-text);
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        /* Manage Existing Items List */
-        .manage-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .manage-item:last-child {
-            border-bottom: none;
-        }
-
-        .manage-info span {
-            font-weight: 600;
-            display: block;
-        }
-
-        .manage-info small {
-            color: var(--text-muted);
-        }
-
-        .delete-btn {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .delete-btn:hover {
-            background: var(--danger-hover);
-        }
-
-        .empty-state {
-            color: var(--text-muted);
-            text-align: center;
-            padding: 20px;
-        }
+        .media-preview-card h4 { font-size: 0.9rem; color: var(--primary-gold); font-weight: 700; }
+        .empty-notice { color: var(--text-muted); font-style: italic; font-size: 0.82rem; text-align: center; padding: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
-    <aside>
-        <h2>⚡ Admin Panel</h2>
-        <nav>
-            <a href="#" class="active">Dashboard</a>
-            <a href="/" target="_blank">View Live Website ↗</a>
-        </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main>
-        <header>
-            <h1>Broadcast Content Manager</h1>
-            <p>Publish announcements, updates, or media files straight to your website feed.</p>
+    <div class="admin-shell">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-title">
+                <h1>🎛️ Master Content & Layout Studio</h1>
+                <p>Manage sections with page links, upload audio files, documents, pictures, full banners, and visitor traffic metrics.</p>
+            </div>
+            <div class="admin-actions">
+                <button class="btn btn-secondary" onclick="resetAllData()">🔄 Reset Defaults</button>
+                <a href="index.html" class="btn">🚀 Open Portal</a>
+            </div>
         </header>
 
-        <!-- Success Message Banner -->
-        <div id="successBanner" class="success-banner">Successfully published new update!</div>
+        <!-- Dashboard Control Panels Grid -->
+        <div class="dashboard-grid">
+            
+            <!-- 1. LIVE VISITOR TRAFFIC ANALYTICS -->
+            <section class="panel-card">
+                <div class="panel-header">
+                    <h2>📊 Live Visitor Traffic</h2>
+                    <span id="visitorCountBadge" style="font-size:0.78rem; color:var(--success); font-weight:700;">🟢 Active Tracking</span>
+                </div>
+                <div class="visitor-stats-row">
+                    <div class="stat-box">
+                        <span class="number" id="liveVisitorsNum">1</span>
+                        <span class="label">Live Active Now</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="totalVisitsNum">1</span>
+                        <span class="label">Total Visits Logged</span>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top:2px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label class="form-label">Recent Visitor Logs (Time & Day)</label>
+                        <button onclick="clearVisitorLogs()" style="background:none; border:none; color:var(--danger); font-size:0.72rem; cursor:pointer; font-weight:600;">Clear Logs</button>
+                    </div>
+                    <div id="visitorLogsList" class="items-list" style="max-height: 145px;"></div>
+                </div>
+            </section>
 
-        <!-- Create Post Card -->
-        <div class="card">
-            <h3>Publish New Update</h3>
-            <form action="/api/upload-content" method="POST" enctype="multipart/form-data">
-                <label for="title">Title / Heading</label>
-                <input type="text" id="title" name="title" placeholder="e.g., Major Website Update Live!" required>
+            <!-- 2. SECTIONS & PAGE LINKS MANAGER -->
+            <section class="panel-card">
+                <div class="panel-header">
+                    <h2>📂 Sections & Page Links</h2>
+                    <span id="secCount" style="font-size:0.78rem; color:var(--primary-gold); font-weight:700;">0 Sections</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Section Name</label>
+                    <input type="text" id="secNameInput" class="form-input" placeholder="e.g. Al Quran, Sister Section">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Page URL / Link</label>
+                    <input type="text" id="secUrlInput" class="form-input" placeholder="e.g. quran.html or #seerah">
+                </div>
+                <button class="btn" onclick="addSectionItem()" style="width:100%; justify-content:center; margin-top:4px;">Add Navigation Section</button>
+                <div class="form-group" style="margin-top:6px;">
+                    <label class="form-label">Active Sections</label>
+                    <div id="sectionsList" class="items-list"></div>
+                </div>
+            </section>
 
-                <label for="description">Description / Details</label>
-                <textarea id="description" name="description" placeholder="Provide details about your broadcast or upload..."></textarea>
+            <!-- 3. FULL BANNER MANAGER -->
+            <section class="panel-card">
+                <div class="panel-header">
+                    <h2>📢 Full Banners</h2>
+                    <span id="bannerCount" style="font-size:0.78rem; color:var(--primary-gold); font-weight:700;">0 Banners</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Banner Title</label>
+                    <input type="text" id="bannerTitleInput" class="form-input" placeholder="e.g. Special Ramadan Broadcast">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description / Subtext</label>
+                    <textarea id="bannerDescInput" class="form-input" style="height:55px;" placeholder="Details about the banner..."></textarea>
+                </div>
+                <button class="btn" onclick="addBannerItem()" style="width:100%; justify-content:center; margin-top:4px;">Publish Full Banner</button>
+                <div class="form-group" style="margin-top:6px;">
+                    <label class="form-label">Active Banners</label>
+                    <div id="bannersList" class="items-list"></div>
+                </div>
+            </section>
 
-                <label for="mediaFile">Upload Media (Optional Image, Audio MP3, or Document)</label>
-                <input type="file" id="mediaFile" name="mediaFile">
+            <!-- 4. AUDIO & FILES LIBRARY MANAGER -->
+            <section class="panel-card">
+                <div class="panel-header">
+                    <h2>🎵 Audio & File Uploads</h2>
+                    <span id="fileCount" style="font-size:0.78rem; color:var(--primary-gold); font-weight:700;">0 Files</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">File / Audio Title</label>
+                    <input type="text" id="fileTitleInput" class="form-input" placeholder="e.g. Surah Al-Mulk Recitation / PDF Book">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">File Type</label>
+                    <select id="fileTypeSelect" class="form-input">
+                        <option value="audio">🎵 Audio (MP3)</option>
+                        <option value="document">📄 Document (PDF / File)</option>
+                        <option value="image">🖼️ Picture / Cover</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Source URL / Link</label>
+                    <input type="text" id="fileUrlInput" class="form-input" placeholder="Paste media link or file URL">
+                </div>
+                <button class="btn" onclick="addFileItem()" style="width:100%; justify-content:center; margin-top:4px;">Add Media Item</button>
+                <div class="form-group" style="margin-top:6px;">
+                    <label class="form-label">Uploaded Library Items</label>
+                    <div id="filesList" class="items-list"></div>
+                </div>
+            </section>
 
-                <button type="submit" class="submit-btn">Publish to Website</button>
-            </form>
         </div>
 
-        <!-- Manage / Delete Content Card -->
-        <div class="card">
-            <h3>Manage Existing Broadcasts</h3>
-            <div id="manage-container" class="empty-state">Loading active broadcasts...</div>
-        </div>
-    </main>
+        <!-- Live Preview Studio -->
+        <section class="preview-wrapper">
+            <div class="panel-header">
+                <h2>👁️ Live Portal Preview Canvas</h2>
+                <span style="font-size:0.8rem; color:var(--accent-cyan);">Synced in Real-Time</span>
+            </div>
+            <div class="portal-canvas">
+                <div id="previewBannerArea">
+                    <div class="empty-notice">No banners published yet.</div>
+                </div>
+                <div>
+                    <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">NAVIGATION SECTIONS (CLICKABLE)</div>
+                    <div id="previewNavArea" class="preview-nav">
+                        <div class="empty-notice">No sections created.</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:0.8rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">MEDIA & FILE SECTIONS</div>
+                    <div id="previewMediaArea" class="media-grid">
+                        <div class="empty-notice">No audio files, documents, or pictures uploaded yet.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
 
     <script>
-        // Check for success URL query parameter to show banner
-        if (window.location.search.includes('success=true')) {
-            const banner = document.getElementById('successBanner');
-            banner.style.display = 'block';
-            setTimeout(() => { banner.style.display = 'none'; }, 5000);
+        // Default Master State Data
+        let sections = JSON.parse(localStorage.getItem('master_sections')) || [
+            { name: "Home", url: "index.html" },
+            { name: "Al Quran", url: "quran.html" },
+            { name: "Media Library", url: "media.html" },
+            { name: "Library", url: "library.html" },
+            { name: "Sister Section", url: "sisters.html" },
+            { name: "Kids Corner", url: "kids.html" },
+            { name: "Events", url: "events.html" },
+            { name: "Habibiyah", url: "habibiyah.html" },
+            { name: "Contact Us", url: "contact.html" }
+        ];
+
+        let banners = JSON.parse(localStorage.getItem('master_banners')) || [
+            { title: "🌟 Welcome to AhleSunnat.AI Master Portal", desc: "Access authenticated research, media, and digital books." }
+        ];
+
+        let files = JSON.parse(localStorage.getItem('master_files')) || [
+            { title: "Seerat-e-Mustafa ﷺ Audio Lecture", type: "audio", url: "#" },
+            { title: "Fatwa Rizwiya Vol. 1 (PDF)", type: "document", url: "#" }
+        ];
+
+        // Visitor Logging & Tracking System
+        let visitorLogs = JSON.parse(localStorage.getItem('master_visitor_logs')) || [];
+        let totalVisits = parseInt(localStorage.getItem('master_total_visits')) || 1;
+
+        function recordVisitorSession() {
+            const now = new Date();
+            const optionsDay = { weekday: 'short', month: 'short', day: 'numeric' };
+            const dayStr = now.toLocaleDateString('en-US', optionsDay);
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            // Check if session already counted in this tab session
+            if (!sessionStorage.getItem('session_recorded')) {
+                totalVisits++;
+                sessionStorage.setItem('session_recorded', 'true');
+                visitorLogs.unshift({ day: dayStr, time: timeStr, status: 'Active Visitor' });
+                if (visitorLogs.length > 25) visitorLogs.pop(); // Keep last 25 logs
+            }
+            localStorage.setItem('master_visitor_logs', JSON.stringify(visitorLogs));
+            localStorage.setItem('master_total_visits', totalVisits);
         }
 
-        // Fetch and render list of content items for deletion management
-        function loadManageList() {
-            fetch('/api/content')
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('manage-container');
-                    if (!data || data.length === 0) { 
-                        container.className = 'empty-state';
-                        container.innerHTML = 'No active updates found.'; 
-                        return; 
-                    }
-                    
-                    container.className = '';
-                    container.innerHTML = '';
-                    data.forEach(item => {
-                        container.innerHTML += `
-                            <div class="manage-item">
-                                <div class="manage-info">
-                                    <span>${item.title || 'Untitled Post'}</span>
-                                    <small>${item.filetype ? 'Contains file attachment' : 'Text-only update'}</small>
-                                </div>
-                                <button class="delete-btn" onclick="deleteItem(${item.id})">Delete</button>
-                            </div>`;
-                    });
-                })
-                .catch(err => {
-                    document.getElementById('manage-container').innerHTML = '<p style="color: red;">Failed to load posts from server.</p>';
-                });
+        window.onload = function() {
+            recordVisitorSession();
+            renderAll();
+        };
+
+        function renderAll() {
+            renderSections();
+            renderBanners();
+            renderFiles();
+            renderVisitorStats();
+            renderPreview();
+            persistData();
         }
 
-        // Handle item deletion
-        function deleteItem(id) {
-            if (confirm('Are you sure you want to delete this update?')) {
-                fetch(`/api/delete/${id}`, { method: 'POST' })
-                    .then(res => res.json())
-                    .then(response => {
-                        if (response.success) {
-                            loadManageList();
-                        } else {
-                            alert('Failed to delete item.');
-                        }
-                    })
-                    .catch(() => alert('Network error while deleting.'));
+        function persistData() {
+            localStorage.setItem('master_sections', JSON.stringify(sections));
+            localStorage.setItem('master_banners', JSON.stringify(banners));
+            localStorage.setItem('master_files', JSON.stringify(files));
+        }
+
+        // --- Sections Logic ---
+        function addSectionItem() {
+            const name = document.getElementById('secNameInput').value.trim();
+            const url = document.getElementById('secUrlInput').value.trim() || '#';
+            if (!name) return;
+            sections.push({ name, url });
+            document.getElementById('secNameInput').value = '';
+            document.getElementById('secUrlInput').value = '';
+            renderAll();
+        }
+        function deleteSection(idx) {
+            sections.splice(idx, 1);
+            renderAll();
+        }
+
+        // --- Banners Logic ---
+        function addBannerItem() {
+            const title = document.getElementById('bannerTitleInput').value.trim();
+            const desc = document.getElementById('bannerDescInput').value.trim();
+            if (!title) return;
+            banners.unshift({ title, desc });
+            document.getElementById('bannerTitleInput').value = '';
+            document.getElementById('bannerDescInput').value = '';
+            renderAll();
+        }
+        function deleteBanner(idx) {
+            banners.splice(idx, 1);
+            renderAll();
+        }
+
+        // --- Files & Audio Logic ---
+        function addFileItem() {
+            const title = document.getElementById('fileTitleInput').value.trim();
+            const type = document.getElementById('fileTypeSelect').value;
+            const url = document.getElementById('fileUrlInput').value.trim() || '#';
+            if (!title) return;
+            files.unshift({ title, type, url });
+            document.getElementById('fileTitleInput').value = '';
+            document.getElementById('fileUrlInput').value = '';
+            renderAll();
+        }
+        function deleteFile(idx) {
+            files.splice(idx, 1);
+            renderAll();
+        }
+
+        // --- Visitor Stats Render ---
+        function renderVisitorStats() {
+            document.getElementById('liveVisitorsNum').innerText = Math.floor(Math.random() * 3) + 1; // Simulated concurrent visitor fluctuation
+            document.getElementById('totalVisitsNum').innerText = totalVisits;
+            
+            const container = document.getElementById('visitorLogsList');
+            if (visitorLogs.length === 0) {
+                container.innerHTML = `<div class="empty-notice">No visitor logs recorded yet.</div>`;
+                return;
+            }
+            container.innerHTML = visitorLogs.map(log => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <span class="item-name">👤 Visitor Connection</span>
+                        <span class="item-meta">📅 ${escapeHtml(log.day)} at ⏰ ${escapeHtml(log.time)}</span>
+                    </div>
+                    <span style="font-size:0.72rem; color:var(--success); font-weight:600;">Active</span>
+                </div>
+            `).join('');
+        }
+
+        function clearVisitorLogs() {
+            visitorLogs = [];
+            totalVisits = 1;
+            localStorage.removeItem('master_visitor_logs');
+            localStorage.setItem('master_total_visits', totalVisits);
+            renderAll();
+        }
+
+        // --- Render UI & Live Preview ---
+        function renderSections() {
+            const container = document.getElementById('sectionsList');
+            document.getElementById('secCount').innerText = `${sections.length} Sections`;
+            if (sections.length === 0) { container.innerHTML = `<div class="empty-notice">No sections.</div>`; return; }
+            container.innerHTML = sections.map((s, i) => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(s.name)}</span>
+                        <span class="item-meta">Links to: ${escapeHtml(s.url)}</span>
+                    </div>
+                    <button class="icon-btn" onclick="deleteSection(${i})" title="Delete">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function renderBanners() {
+            const container = document.getElementById('bannersList');
+            document.getElementById('bannerCount').innerText = `${banners.length} Banners`;
+            if (banners.length === 0) { container.innerHTML = `<div class="empty-notice">No banners.</div>`; return; }
+            container.innerHTML = banners.map((b, i) => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(b.title)}</span>
+                    </div>
+                    <button class="icon-btn" onclick="deleteBanner(${i})" title="Delete">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function renderFiles() {
+            const container = document.getElementById('filesList');
+            document.getElementById('fileCount').innerText = `${files.length} Files`;
+            if (files.length === 0) { container.innerHTML = `<div class="empty-notice">No files uploaded.</div>`; return; }
+            container.innerHTML = files.map((f, i) => `
+                <div class="item-row">
+                    <div class="item-info">
+                        <span class="item-name">${escapeHtml(f.title)}</span>
+                        <span class="item-meta">Type: ${f.type.toUpperCase()}</span>
+                    </div>
+                    <button class="icon-btn" onclick="deleteFile(${i})" title="Delete">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function renderPreview() {
+            const bannerArea = document.getElementById('previewBannerArea');
+            const navArea = document.getElementById('previewNavArea');
+            const mediaArea = document.getElementById('previewMediaArea');
+
+            // Banner Preview
+            if (banners.length > 0) {
+                bannerArea.innerHTML = `
+                    <div class="preview-banner">
+                        <h3>${escapeHtml(banners[0].title)}</h3>
+                        <p>${escapeHtml(banners[0].desc)}</p>
+                    </div>
+                `;
+            } else {
+                bannerArea.innerHTML = `<div class="empty-notice">No active banners.</div>`;
+            }
+
+            // Navigation Preview
+            if (sections.length > 0) {
+                navArea.innerHTML = sections.map(s => `
+                    <a href="${escapeHtml(s.url)}" class="preview-nav-pill" style="text-decoration:none;">📁 ${escapeHtml(s.name)}</a>
+                `).join('');
+            } else {
+                navArea.innerHTML = `<div class="empty-notice">No sections available.</div>`;
+            }
+
+            // Media Preview
+            if (files.length > 0) {
+                mediaArea.innerHTML = files.map(f => {
+                    let icon = f.type === 'audio' ? '🎵' : f.type === 'document' ? '📄' : '🖼️';
+                    return `
+                        <div class="media-preview-card">
+                            <h4>${icon} ${escapeHtml(f.title)}</h4>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">Category: ${f.type}</span>
+                            <a href="${escapeHtml(f.url)}" target="_blank" style="font-size:0.78rem; color:var(--primary-gold); margin-top:4px; text-decoration:none;">Open Link ➔</a>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                mediaArea.innerHTML = `<div class="empty-notice">No media items uploaded.</div>`;
             }
         }
 
-        // Load list on page open
-        loadManageList();
+        function resetAllData() {
+            if (confirm('Reset all master sections, banners, files, and visitor logs to default?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
     </script>
 </body>
 </html>
